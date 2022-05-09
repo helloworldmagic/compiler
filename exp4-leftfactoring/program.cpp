@@ -3,33 +3,27 @@ using namespace std;
  
 vector<string> insertUniqueProd(string str){
       vector<string> tempstr;
-      int i=0, j=0;
+      int i=0;
  
-      while(str[j] != '>'){
+      while(str[i] != '>'){
         i++;
-        j++;
       }
- 
-      i++,j++;
- 
-      while(j <= str.size()){
-          if(j == str.size()){
-            string temp = str.substr(i, j-i);
+      i++;
+      string temp= "";
+  
+      while(i<= str.size()){
+          if(i== str.size()){
             tempstr.push_back(temp);
-            j++;
             break;
           }
-          else if(str[j] == '|'){
-            string temp = str.substr(i, j-i);
+          else if(str[i] == '|'){
             tempstr.push_back(temp);
-            i = j+1;
-            j++;
-           
+            temp = "";
           }
           else
-            j++;
+            temp += str[i];
+            i++;
       }
- 
   return tempstr;
 }
  
@@ -80,7 +74,6 @@ string findNonTerminal(string str){
     temp +=str[i];
     i++;
   }
- 
   return temp;
 }
  
@@ -123,13 +116,12 @@ vector<string> LeftFactoring(vector<string>&production){
         pair<string, string> eliminateFactorString = eliminatingLeftFactor(commonPrefix, nonTerminal, temp);
         string temp1 = eliminateFactorString.first;
         string temp2 = eliminateFactorString.second;
-       
-       
+        
         ans.push_back(temp1);
         ans.push_back(temp2);
       }
     }
- 
+  
     return ans;
 }
  
