@@ -3,31 +3,27 @@ using namespace std;
  
 vector<string> insertUniqueProd(string str){
       vector<string> tempstr;
-      int i=0, j=0;
+      int i=0;
  
-      while(str[j] != '>'){
+      while(str[i] != '>'){
         i++;
-        j++;
       }
- 
-      i++,j++;
- 
-      while(j <= str.size()){
-          if(j == str.size()){
-            string temp = str.substr(i, j-i);
+      i++;
+      string temp = "";
+  
+      while(i<= str.size()){
+          if(i==str.size()){
             tempstr.push_back(temp);
-            j++;
+            temp ="";
             break;
           }
-          else if(str[j] == '|'){
-            string temp = str.substr(i, j-i);
+          else if(str[i] == '|'){
             tempstr.push_back(temp);
-            i = j+1;
-            j++;
-           
+            temp = "";
           }
           else
-            j++;
+            temp += str[i];
+            i++;
       }
  
   return tempstr;
@@ -37,35 +33,41 @@ vector<string> EliminateLeft(vector<string>&production){
     vector<string> ans;
  
     for(auto i:production){
-      bool isReduced = false;
       vector<string> temp = insertUniqueProd(i);
+      
       char non_terminal = i[0];
-      string temp1="", temp2="";
-      string lastprod = temp[temp.size()-1];
       string newtempterminal = "";
       newtempterminal += non_terminal;
+
+      string temp1="";
+      string temp2="";
+      string lastprod = temp[temp.size()-1];
+
+      bool isReduced = false;
+;
      
       for(auto j: temp){
         if(non_terminal == j[0]){
             isReduced = true;
             string x = j.substr(1, j.size()-1);
-            temp1 += x + non_terminal +"\'" + "|";
+            temp2 += x + non_terminal +"\'" + "|";
         }else{
             if(j[0] != '#')
-              temp2 += j;
+              temp1 += j;
  
-            temp2 += newtempterminal + "\'";
+            temp1 += newtempterminal + "\'";
             if(j != lastprod)
-              temp2 += "|";
+              temp1 += "|";
         }
       }
- 
-      temp1 = newtempterminal + "\'" + "->" + temp1 + "#";
-      temp2 = newtempterminal + "->" + temp2;
+
+      temp1 = newtempterminal + "->" + temp1;
+      temp2 = newtempterminal + "\'" + "->" + temp2 + "#";
+      
      
       if(isReduced == true){
-        ans.push_back(temp2);
         ans.push_back(temp1);
+        ans.push_back(temp2);
       }
       else
         ans.push_back(i);
