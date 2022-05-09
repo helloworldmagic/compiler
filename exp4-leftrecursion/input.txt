@@ -1,2 +1,3 @@
-A->ABd|Aa|a
-B->Be|b
+E->E+T|T
+T->TxF|F
+F->i
