@@ -1,128 +1,78 @@
 #include <bits/stdc++.h>
 using namespace std;
- 
-void placeMapElement(unordered_map<char, string> &m1,
-                     unordered_map<string, string> &m2) {
- 
-  // m1
+
+void placemapelement(unordered_map<string, string>&m1, unordered_map<char, string>&m2){
+  string keywords[] = {"int", "float", "char", "string", "double" , "return", "if", "else"};
+
+  for(auto i : keywords)
+    m1[i] = "keyword";
+
   string op = "+-*/=><";
   string other = ",;\(){}[]'':.";
-  for (auto i : op)
-    m1[i] = "op";
-  for (auto i : other)
-    m1[i] = "ot";
- 
-  // m2
-  string numer = "0123456789";
- 
-  string keywords[] = {
-  "return",
-  "int","float","char","string","double","short","long","auto","const","void"
-  "if","else","switch","case","default","break","continue",
-  "for","while","do",
-  "enum","goto","register","signed","sizeof","static","typedef","union","unsigned","volatile"
-  };
- 
-  for (auto i : numer) {
-    string temp = "";
-    temp += i;
-    m2[temp] = "num";
-  }
- 
-  for (auto i : keywords)
-    m2[i] = "key";
+
+  for(auto i: op)
+    m2[i] = "operator";
+
+  for(auto i: other)
+    m2[i] = "other";
 }
- 
-void printData(unordered_set<string> &s1, string str) {
-  cout <<"\n"<< str << ": ";
- 
-  for (auto dt : s1)
-    cout<<dt<<" ";
-  cout <<"\n";
- 
-  return;
+
+
+void printsome(string header, unordered_set<string> s){
+  cout<<header<<": ";
+  for(auto i: s)
+    cout<<i<<" ";
+  cout<<endl;
 }
- 
-void isCommentFinder(char x, bool& isPrevSingleSlash, bool& isComment){
-  if(x == '/' && isPrevSingleSlash == false)
-      isPrevSingleSlash = true;
-   
-    if(isPrevSingleSlash == true){
-      if(x == '/')
-        isComment = true;
-      else
-        isPrevSingleSlash= false;
-    }
- 
-    if(x=='\n'){
-      isComment = false;
-      isPrevSingleSlash = false;
-    }
-}
- 
- 
+
 int main() {
   ifstream f1("input.txt");
- 
-  if (!f1.is_open()) {
-    cout << "Error while opening file";
+
+  if(!f1.is_open()){
+    cout<<"Error in file opening"<<endl;
     exit(0);
   }
- 
-  unordered_set<string> Identifier;
-  unordered_set<string> Keywords;
-  unordered_set<string> Numercal;
-  unordered_set<string> op;
-  unordered_set<string> other;
- 
-  unordered_map<char, string> m1;
-  unordered_map<string, string> m2;
-  placeMapElement(m1, m2);
- 
+
   string temp;
-  bool isComment = false;
-  bool isPrevSingleSlash = false;
- 
-  while (!f1.eof()) {
-    char x = f1.get();
-    isCommentFinder(x, isPrevSingleSlash, isComment);
-   
-    if(isComment)
-      continue;
- 
-    auto it = m1.find(x);
- 
-    if (it == m1.end() && x!=' ') {
-      temp += x;
-    } else {
-     
-      string newTemp = "";
-      newTemp += temp[0];
-     
-      if(m2[newTemp] == "num")
-        Numercal.insert(temp);
-      else if(m2[temp] == "key")
-        Keywords.insert(temp);
-      else
-        Identifier.insert(temp);
-     
-      newTemp = "";
-      newTemp += x;
- 
-      if(m1[x] == "op")
-        op.insert(newTemp);
-      else if(m1[x] == "ot")
-        other.insert(newTemp);
-     
-      temp="";
+  unordered_map<string, string> m1;
+  unordered_map<char, string> m2;
+
+  placemapelement(m1, m2);
+
+  unordered_set<string> keyword;
+  unordered_set<string> identifiers;
+  unordered_set<string> operators;
+  unordered_set<string> numeric;
+
+  string t="";
+  
+  while(getline(f1, temp)){
+    cout<<temp<<endl;
+    for(auto i: temp){
+        if(i!=' ' && m2.find(i)==m2.end()){
+          t += i;
+        }else{
+           if(isdigit(t[0]))
+             numeric.insert(t);
+            else if(m1[t] == "keyword")
+              keyword.insert(t);
+            else
+              identifiers.insert(t);
+
+            if(m2[i] == "operator"){
+              string newtemp = "";
+              newtemp += i;
+              operators.insert(newtemp);
+            }  
+            t = "";
+        }
     }
   }
- 
-  printData(Identifier, "Identifier");
-  printData(Keywords, "Keywords");
-  printData(Numercal, "Numercal");
-  printData(op, "operator");
-  printData(other, "other");
- 
+
+  printsome("keywords", keyword);
+  printsome("identifiers", identifiers);
+  printsome("operator", operators);
+  printsome("numeric", numeric);
+
   return 0;
 }
